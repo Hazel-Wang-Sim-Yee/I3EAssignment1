@@ -165,6 +165,7 @@ public class PlayerBehaviour : MonoBehaviour
                 currentKey = null;
                 currentDoor = null;
                 currentChest = null;
+                mainTextBody.gameObject.SetActive(false);
             }
         }
         else if (currentKey != null)
@@ -277,15 +278,16 @@ public class PlayerBehaviour : MonoBehaviour
     {
         score += amount;// Increase the score by the specified amount
         Debug.Log("Score: " + score);
-        scoreText.text = "Coins: " + score.ToString() + "/4";// Update the score UI
+        scoreText.text = "Coins: " + score.ToString() + "/16";// Update the score UI
         // Check for achievements after adding score
+        AchivementCheck();
     }
 
     // Function to handle interactions with objects
     // This function will check if the player can interact upon entering player's trigger range with an object and perform the interaction
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Collectible"))
+        if (other.CompareTag("Key"))
         {
             Debug.Log("Player is looking at " + other.gameObject.name);
             currentKey = other.gameObject.GetComponent<KeyBehaviour>();//retrieve key information
@@ -324,6 +326,16 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 Debug.Log("interacting with object");
                 currentKey.collect(this); //Collect key
+                if (currentKey.KeyName == "GoldKey") // Check if the key is gold
+                {
+                    goldKeyGet = true; // Set gold key flag
+                    keyImageGold.enabled = true; // Enable gold key image
+                }
+                else // If the key is a regular key
+                {
+                    keyGet = true; // Set regular key flag
+                    keyImage.enabled = true; // Enable regular key image
+                }
                 canInteract = false; // Reset interaction state
             }
             else if (currentDoor != null)
@@ -339,9 +351,6 @@ public class PlayerBehaviour : MonoBehaviour
                     currentDoor.Interact();//open door
                 }
                 else // If player cannot open the door
-                if (keyGet)
-                { currentDoor.Interact(); }
-                else
                 {
                     Debug.Log("The door is locked");
                     // Display door locked message
@@ -446,7 +455,6 @@ public class PlayerBehaviour : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Key")) // If the player exits the trigger of a key
-        if (other.CompareTag("Collectible"))
         {
             // Reset the currentKey, interaction state and hide the interaction text
             currentKey = null;

@@ -41,7 +41,7 @@ public class GiftBox : MonoBehaviour
     void openChest() // Function to open the chest
     {
         Debug.Log("Gift box opened!");
-        ChestHinge.Rotate(new Vector3(90, 0, 0), Space.Self);
+        ChestHinge.Rotate(new Vector3(0, 0, 90), Space.Self);
         // Play the chest opening sound
         chestAudioSource = GetComponent<AudioSource>();
         chestAudioSource.Play();
